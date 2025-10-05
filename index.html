@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carpenter Work Billing</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body data-mode="area">
+    <div id="history-overlay" onclick="toggleHistorySidebar()"></div>
+    <div id="history-sidebar">
+        <h2>History <button class="history-close-btn" onclick="toggleHistorySidebar()">×</button></h2>
+        <div id="history-list"></div>
+    </div>
+
+    <div id="tools">
+        <button onclick="toggleView()" data-view="bill"><span class="material-icons" id="view-icon">visibility</span><span id="view-text">SHOW BILL</span></button>
+        <button onclick="toggleMode()"><span class="material-icons" id="mode-icon">calculate</span><span id="mode-text">AREA MODE</span></button>
+        <button onclick="toggleHistorySidebar()"><span class="material-icons">history</span>HISTORY</button>
+        <button onclick="undoAction()"><span class="material-icons">undo</span>UNDO</button>
+        <button onclick="redoAction()"><span class="material-icons">redo</span>REDO</button>
+        <button onclick="clearAllData()">Clear All Data</button>
+        <button onclick="downloadPDF()">PDF</button>
+        <button onclick="cycleTheme()">Change Theme</button>
+        <button onclick="toggleRateColumn()"><span class="material-icons">visibility_off</span>RATE</button>
+    </div>
+
+    <div id="main-container">
+        
+        <div id="bill-container" style="display: none">
+            <div class="company-details">
+                <div class="top-name" contenteditable="true" oninput="saveToLocalStorage()" id="companyName">
+                    COMPANY NAME
+                </div>
+                <div class="contact">
+                    <p contenteditable="true" oninput="saveToLocalStorage()" id="companyAddr">Address</p>
+                    <p contenteditable="true" oninput="saveToLocalStorage()" id="companyPhone">+91 01234-56789</p>
+                </div>
+            </div>
+            <div class="customer-details">
+                <table>
+                    <tr>
+                        <td class="label">
+                            Name: <input type="text" id="custName" oninput="saveToLocalStorage()" />
+                        </td>
+                        <td class="label">
+                            Bill no: <input type="text" id="billNo" oninput="saveToLocalStorage()" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            Address: <input type="text" id="custAddr" oninput="saveToLocalStorage()" />
+                        </td>
+                        <td class="label">
+                            Contact no: <input type="text" id="custPhone" oninput="saveToLocalStorage()"
+                                pattern="[0-9]*" inputmode="numeric" />
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <td class="label">
+                            Date: <input type="text" id="billDate" oninput="saveToLocalStorage()" />
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="list-of-items" id="bill-list-of-items">
+                <table id="copyListArea">
+                    <thead>
+                        <tr>
+                            <th>Sr No</th>
+                            <th>Particulars</th>
+                            <th>Area</th>
+                            <th>Rate</th>
+                            <th>Qty</th>
+                            <th>Amount</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <table id="copyListManual" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Sr No</th>
+                            <th>Particulars</th>
+                            <th>Qty</th>
+                            <th>Unit</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <table id="bill-total-table">
+                    <tr>
+                        <td colspan="5" class="total-cell">TOTAL</td>
+                        <td id="copyTotalAmount" class="total-cell">0.00</td>
+                    </tr>
+                </table>
+            </div>
+            </div>
+
+
+        <div id="area-item-container">
+            <div class="size-input">
+                <input id="width" type="text" placeholder="Width" pattern="[0-9]*" inputmode="numeric" />
+                <input id="height" type="text" placeholder="Height" pattern="[0-9]*" inputmode="numeric" />
+                <input id="depth" type="text" placeholder="Depth" pattern="[0-9]*" inputmode="numeric" />
+            </div>
+            <div class="size-input">
+                <input id="rate" type="text" placeholder="Rate" pattern="[0-9]*" inputmode="numeric" />
+                <input id="quantity" type="text" placeholder="Quantity" pattern="[0-9]*" inputmode="numeric" />
+                <select id="selectMeasurement">
+                    <option value="ft">ft</option>
+                    <option value="inch">inch</option>
+                    <option value="cm">cm</option>
+                    <option value="mm">mm</option>
+                </select>
+            </div>
+            <div class="size-input">
+                <input id="itemName" type="text" list="item-list" placeholder="Custom Item Name..." />
+                <datalist id="item-list">
+                    <option value="wardrobe"></option>
+                    <option value="cupboard"></option>
+                    <option value="Loft"></option>
+                    <option value="wash basin"></option>
+                    <option value="kitchen"></option>
+                    <option value="kitchen platform"></option>
+                    <option value="kitchen trolley"></option>
+                    <option value="crockery unit"></option>
+                    <option value="side table"></option>
+                    <option value="master bed"></option>
+                    <option value="children bed"></option>
+                    <option value="study table"></option>
+                    <option value="book unit"></option>
+                    <option value="dressing table"></option>
+                    <option value="indian sitting"></option>
+                    <option value="safety door"></option>
+                    <option value="tv unit"></option>
+                    <option value="tv paneling"></option>
+                    <option value="shoe rack"></option>
+                    <option value="inverter box"></option>
+                    <option value="washroom box"></option>
+                    <option value="wall paneling"></option>
+                    <option value="center table"></option>
+                    <option value="safety door paneling"></option>
+                    <option value="wall shelf"></option>
+                    <option value="sofa cum bed"></option>
+                    <option value="folding bed"></option>
+                    <option value="dining table"></option>
+                    <option value="folding dining table"></option>
+                    <option value="profile shutter"></option>
+                    <option value="wardrobe with profile door"></option>
+                    <option value="tandem box"></option>
+                    <option value="chimney box"></option>
+                    <option value="sliding wardrobe"></option>
+                    <option value="openable wardrobe"></option>
+                    <option value="hidden compartment"></option>
+                    <option value="wall moulding"></option>
+
+                </datalist>
+
+                <button onclick="addRowArea()" id="addItemBtnArea">Add Item</button>
+                <button onclick="updateRowArea()" id="updateItemBtnArea" style="display: none;">Update Item</button>
+            </div>
+            <textarea id="itemNotesArea" rows="3" placeholder="Add notes for this item..." oninput="autoSave()"></textarea>
+            <div id="addedItemsArea">
+                <table id="createListArea">
+                    <thead>
+                        <tr>
+                            <th>Sr No</th>
+                            <th>Particulars</th>
+                            <th>Area</th>
+                            <th>Rate</th>
+                            <th>Qty</th>
+                            <th>Amount</th>
+
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <table>
+                    <tr>
+                        <td colspan="5" class="total-cell">TOTAL AMT</td>
+                        <td id="createTotalAmountArea" class="total-cell">0.00</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="manual-item-container" style="display: none;">
+            <div class="size-input">
+                <input id="itemNameManual" type="text" list="item-list2" placeholder="Custom Item Name..." />
+                <datalist id="item-list2">
+                    <option value="auto hinges 0 crank"></option>
+                    <option value="auto hinges 8 crank"></option>
+                    <option value="8inch channel"></option>
+                    <option value="10inch channel"></option>
+                    <option value="12inch channel"></option>
+                    <option value="14inch channel"></option>
+                    <option value="16inch channel"></option>
+                    <option value="18inch channel"></option>
+                    <option value="20inch channel"></option>
+                    <option value="22inch channel"></option>
+                    <option value="24inch channel"></option>
+                    <option value="14 X 1 Nails"></option>
+                    <option value="14 X 1.25 Nails"></option>
+                    <option value="14 X 1.5 Nails"></option>
+                    <option value="14 X 1.75 Nails"></option>
+                    <option value="14 X 2 Nails"></option>
+                    <option value="17 X 0.75 Nails"></option>
+                    <option value="17 X 1 Nails"></option>
+                    <option value="17 X 1.25 Nails"></option>
+                    <option value="19 X 0.75 Nails"></option>
+                    <option value="19 X 1 Nails"></option>
+                    <option value="13 X 6 Nickel Screw"></option>
+                    <option value="16 X 6 Nickel Screw"></option>
+                    <option value="19 X 6 Nickel Screw"></option>
+                    <option value="25 X 6 Nickel Screw"></option>
+                    <option value="32 X 6 Nickel Screw"></option>
+                    <option value="38 X 6 Nickel Screw"></option>
+                    <option value="50 X 6 Nickel Screw"></option>
+                    <option value="60 X 6 Nickel Screw"></option>
+                    <option value="75 X 6 Nickel Screw"></option>
+                    <option value="13 x 8 Nickel Screw"></option>
+                    <option value="19 X 8 Nickel Screw"></option>
+                    <option value="25 X 8 Nickel Screw"></option>
+                    <option value="32 X 8 Nickel Screw"></option>
+                    <option value="38 X 8 Nickel Screw"></option>
+                    <option value="50 X 8 Nickel Screw"></option>
+                    <option value="60 X 8 Nickel Screw"></option>
+
+                </datalist>
+            </div>
+            <div class="size-input">
+                <input id="quantityManual" type="text" placeholder="Quantity" pattern="[0-9]*" inputmode="numeric" />
+                <!--  -->
+                <input list="unitList" id="selectUnit" type="text" placeholder="Enter Unit..." />
+                <datalist id="unitList">
+                    <option value=" ">None</option>
+                    <option value="nos">nos</option>
+                    <option value="pair">pair</option>
+                    <option value="pak">pak</option>
+                    <option value="box">box</option>
+                    <option value="pouch">pouch</option>
+                    <option value="kg">kg</option>
+                    <option value="g">g</option>
+                    <option value="ft">ft</option>
+                    <option value="sqft">sqft</option>
+                    <option value="sheet">sheet</option>
+                    <option value="ltr">ltr</option>
+                    <option value="ml">ml</option>
+                </datalist>
+                <!-- <select id="selectUnit">
+                     <option value=" ">None</option>
+                    <option value="nos">nos</option>
+                    <option value="pair">pair</option>
+                    <option value="pak">pak</option>
+                    <option value="box">box</option>
+                    <option value="pouch">pouch</option>
+                    <option value="kg">kg</option>
+                    <option value="g">g</option>
+                    <option value="ft">ft</option>
+                    <option value="sqft">sqft</option>
+                    <option value="sheet">sheet</option>
+                    <option value="ltr">ltr</option>
+                    <option value="ml">ml</option>
+                    <option value="custom">Custom Unit</option>
+                </select> -->
+                <input id="rateManual" type="text" placeholder="Rate" pattern="[0-9]*" inputmode="numeric" />            
+            </div>
+            <textarea id="itemNotesManual" rows="3" placeholder="Add notes for this item..." oninput="autoSave()"></textarea>
+
+            <div class="size-input">
+                <button onclick="addRowManual()" id="addItemBtnManual">Add Item</button>
+                <button onclick="updateRowManual()" id="updateItemBtnManual" style="display: none;">Update Item</button>
+            </div>
+            
+            
+            <div id="addedItemsManual">
+                <table id="createListManual">
+                    <thead>
+                        <tr>
+                            <th>Sr No</th>
+                            <th>Particulars</th>
+                            <th>Qty</th>
+                            <th>Unit</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <table>
+                    <tr>
+                        <td colspan="5" class="total-cell">TOTAL AMT</td>
+                        <td id="createTotalAmountManual" class="total-cell">0.00</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>

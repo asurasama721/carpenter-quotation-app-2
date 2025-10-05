@@ -1,0 +1,443 @@
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2980b9;
+  --text-color: #333;
+  --bg-color: #f9f9f9;
+  --border-color: #ddd;
+  --highlight-color: #f1c40f;
+  --total-bg: #ecf0f1;
+}
+
+/* Ensure consistent box model */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+  overflow-x: hidden;
+  /* Prevent horizontal scrollbar */
+}
+
+#tools {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+#tools button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--primary-color);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+  display: flex;
+  /* Use flex to center icon and text if needed */
+  align-items: center;
+  justify-content: center;
+}
+
+#tools button:hover {
+  background-color: var(--secondary-color);
+}
+
+#tools button .material-icons {
+  font-size: 20px;
+  /* Adjust icon size */
+  margin-right: 5px;
+  /* Space between icon and text if text is present */
+}
+
+#main-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+#bill-container {
+  overflow: hidden;
+}
+
+/* Updated selector to target both area and manual item containers */
+#bill-container,
+#area-item-container,
+#manual-item-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 300px;
+}
+
+.company-details {
+  text-align: center;
+  margin-bottom: 40px;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.top-name {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: var(--primary-color);
+}
+
+.contact {
+  margin: 5px 0;
+  color: var(--text-color);
+}
+
+.customer-details {
+  margin-bottom: 20px;
+}
+
+.customer-details table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.customer-details .label {
+  padding: 5px 0;
+  white-space: nowrap;
+}
+
+.customer-details input {
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  padding: 2px;
+  margin-left: 5px;
+  width: calc(100% - 70px);
+  /* Adjusted width */
+  max-width: 100%;
+  /* Ensure input doesn't overflow */
+  outline: none;
+  background: transparent;
+}
+
+.customer-details input:focus {
+  border-bottom-color: var(--primary-color);
+}
+
+.list-of-items table,
+#addedItemsArea table,
+#addedItemsManual table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 12px;
+}
+
+.list-of-items th,
+#addedItemsArea th,
+#addedItemsManual th {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 8px;
+  text-align: center;
+}
+
+.list-of-items td,
+#addedItemsArea td,
+#addedItemsManual td {
+  padding: 5px 0 5px 0;
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.list-of-items thead th:nth-child(2),
+#addedItemsArea thead th:nth-child(2),
+#addedItemsManual thead th:nth-child(2),
+.list-of-items tbody td:nth-child(2),
+#addedItemsArea tbody td:nth-child(2),
+#addedItemsManual tbody td:nth-child(2) {
+
+
+  text-align: left;
+
+}
+
+/* Added style to prevent table rows from breaking across pages in print */
+.list-of-items tr,
+#addedItemsArea tr,
+#addedItemsManual tr {
+  break-inside: avoid;
+}
+
+
+.sizes {
+  color: gray;
+  margin: 0;
+  margin-bottom: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.notes {
+  color: #666;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  white-space: pre-wrap;
+  /* Preserve whitespace and line breaks */
+}
+
+
+.itemNameClass {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.list-of-items tr:hover,
+#addedItemsArea tr:hover,
+#addedItemsManual tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+  cursor: pointer;
+}
+
+.total-cell {
+  font-weight: bold;
+  background-color: var(--total-bg);
+  text-align: center;
+}
+
+.size-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+
+}
+
+.size-input input,
+.size-input select {
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  flex: 1;
+  max-width: 100%;
+  /* Ensure input doesn't overflow */
+}
+
+/* Updated selector for notes */
+#itemNotesArea,
+#itemNotesManual {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  resize: vertical;
+  margin-bottom: 15px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.size-input button {
+  padding: 8px 15px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.size-input button:hover {
+  background-color: var(--secondary-color);
+}
+
+
+.remove-btn {
+  color: white;
+  border: none;
+  background-color: rgb(236, 73, 73);
+  padding: 8px 15px;
+  border-radius: 15px;
+  font-weight: 750;
+}
+
+.remove-btn:hover {
+  background-color: white;
+  color: rgb(236, 73, 73);
+}
+
+/* History Sidebar */
+#history-sidebar {
+  position: fixed;
+  top: 0;
+  /* Adjusted right position for closed state */
+  right: -450px;
+  /* Match the width to hide completely */
+  width: 350px;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+  display: block;
+  /* Ensure it's a block element for display toggle */
+}
+
+#history-sidebar.open {
+  right: 0;
+}
+
+#history-sidebar h2 {
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  /* Use flex to align title and close button */
+  justify-content: space-between;
+  /* Space out title and button */
+  align-items: center;
+}
+
+.history-item {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.history-item:hover {
+  background-color: var(--bg-color);
+}
+
+.history-item-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.history-item-date {
+  font-size: 0.8em;
+  color: #666;
+}
+
+.history-item-remove {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: #e74c3c;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.history-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+#history-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
+
+#history-overlay.open {
+  display: block;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #bill-container,
+  #bill-container * {
+    visibility: visible;
+  }
+
+  #bill-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    box-shadow: none;
+  }
+
+  #tools {
+    display: none;
+  }
+
+  #history-sidebar {
+    display: none;
+  }
+
+  #history-overlay {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  #main-container {
+    flex-direction: column;
+  }
+
+  .customer-details input {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  /* Mobile layout for add item inputs */
+  #area-item-container .size-input,
+  #manual-item-container .size-input {
+    flex-direction: column;
+    align-items: stretch;
+    /* Stretch items to fill width */
+  }
+
+  #area-item-container .size-input input,
+  #area-item-container .size-input select,
+  #area-item-container .size-input button,
+  #manual-item-container .size-input input,
+  #manual-item-container .size-input select,
+  #manual-item-container .size-input button {
+    width: 100%;
+    /* Make inputs, select, and buttons full width */
+    margin-left: 0;
+    /* Remove left margin */
+  }
+
+  .customer-details input {
+    width: 100%;
+    /* Make inputs full width */
+    margin-left: 0;
+    /* Remove left margin */
+  }
+
+
+  #history-sidebar {
+    width: 80%;
+    /* Adjusted right position for closed state on mobile */
+    right: -90%;
+  }
+}
