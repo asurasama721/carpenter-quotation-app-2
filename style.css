@@ -435,6 +435,36 @@ body {
   }
 
 
+  /* START OF MOBILE TOOLBAR ADJUSTMENT */
+  #tools button {
+    /* Reduce padding for a smaller button */
+    padding: 10px;
+    /* Center the icon within the button for a pure-icon look */
+    justify-content: center;
+    /* Set a fixed size for uniformity on mobile */
+    width: 40px;
+    height: 40px;
+  }
+
+  #tools button .material-icons {
+    /* Remove the margin-right, as there's no text next to it */
+    margin-right: 0;
+    /* Reset the font-size and line-height for the icon itself */
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  /* Hide any text label inside the button but not the icon span */
+  #tools button:not(.material-icons) {
+    /* This rule targets the button's content that isn't the icon span */
+    /* Hide all text content that is not the icon */
+    font-size: 0;
+    line-height: 0;
+    /* Reset other properties that might affect the button size based on text */
+  }
+  /* END OF MOBILE TOOLBAR ADJUSTMENT */
+
+
   #history-sidebar {
     width: 80%;
     /* Adjusted right position for closed state on mobile */
