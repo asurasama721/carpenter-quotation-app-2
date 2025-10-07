@@ -108,7 +108,7 @@ function toggleView() {
         }
         // Update button text to "SHOW BILL"
         viewText.textContent = "SHOW BILL";
-        viewIcon.textContent = "visibility";
+        viewIcon.textContent = "description";
     }
 }
 
@@ -1327,8 +1327,8 @@ function toggleRateColumn() {
     } else {
         hideTableColumn(document.getElementById(createListId), rateColumnIndex, "none");
         hideTableColumn(document.getElementById(copyListId), rateColumnIndex, "none");
-        icon.textContent = "visibility";
-        toggleButton.innerHTML = `<span class="material-icons">visibility</span>RATE`;
+        icon.textContent = "currency_rupee";
+        toggleButton.innerHTML = `<span class="material-icons">currency_rupee</span>RATE`;
     }
     rateColumnHidden = !rateColumnHidden;
 }
