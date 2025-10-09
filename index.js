@@ -356,7 +356,7 @@ function createTableRowArea(id, itemName, width, height, depth, measurement, not
         <td>${rate.toFixed(2)}</td>
         <td>${quantity}</td>
         <td class="amount">${amount.toFixed(2)}</td>
-        <td><button onclick="${removeFn}" class="remove-btn">Remove</button></td>
+        <td><button onclick="${removeFn}" class="remove-btn"><span class="material-icons">close</span></button></td>
     `;
     return tr;
 }
@@ -500,7 +500,7 @@ function createTableRowManual(id, itemName, quantity, unit, rate, amount, notes,
         <td>${unit}</td>
         <td>${rate.toFixed(2)}</td>
         <td class="amount">${amount.toFixed(2)}</td>
-        <td><button onclick="${removeFn}" class="remove-btn">Remove</button></td>
+        <td><button onclick="${removeFn}" class="remove-btn"><span class="material-icons">close</span></button></td>
     `;
     return tr;
 }
@@ -664,7 +664,7 @@ function loadFromLocalStorage() {
               <td>${row.rate}</td>
               <td>${row.qty}</td>
               <td class="amount">${row.amt}</td>
-              <td><button onclick="removeRowArea('${row.id}')" class="remove-btn">Remove</button></td>
+              <td><button onclick="removeRowArea('${row.id}')" class="remove-btn"><span class="material-icons">close</span></button></td>
             `;
 
             row2 = document.createElement("tr");
@@ -682,7 +682,7 @@ function loadFromLocalStorage() {
               <td>${row.unit}</td>
               <td>${row.rate}</td>
               <td class="amount">${row.amt}</td>
-              <td><button onclick="removeRowManual('${row.id}')" class="remove-btn">Remove</button></td>
+              <td><button onclick="removeRowManual('${row.id}')" class="remove-btn"><span class="material-icons">close</span></button></td>
             `;
 
             row2 = document.createElement("tr");
@@ -930,7 +930,7 @@ function restoreStateFromHistory() {
                 <td>${row.rate}</td>
                 <td>${row.qty}</td>
                 <td class="amount">${row.amt}</td>
-                <td><button onclick="removeRowArea('${row.id}')" class="remove-btn">Remove</button></td>
+                <td><button onclick="removeRowArea('${row.id}')" class="remove-btn"><span class="material-icons">close</span></button></td>
             `;
             row2.setAttribute("data-id", row.id);
             row2.addEventListener('click', () => editRowArea(row.id));
@@ -945,7 +945,7 @@ function restoreStateFromHistory() {
                 <td>${row.unit}</td>
                 <td>${row.rate}</td>
                 <td class="amount">${row.amt}</td>
-                <td><button onclick="removeRowManual('${row.id}')" class="remove-btn">Remove</button></td>
+                <td><button onclick="removeRowManual('${row.id}')" class="remove-btn"><span class="material-icons">close</span></button></td>
             `;
             row2.setAttribute("data-id", row.id);
             row2.addEventListener('click', () => editRowManual(row.id));
@@ -1142,7 +1142,7 @@ function loadFromHistory(item) {
               <td>${row.rate}</td>
               <td>${row.qty}</td>
               <td class="amount">${row.amt}</td>
-              <td><button onclick="removeRowArea('${row.id}')" class="remove-btn">Remove</button></td>
+              <td><button onclick="removeRowArea('${row.id}')" class="remove-btn"><span class="material-icons">close</span></button></td>
             `;
             row2 = document.createElement("tr");
             row2.setAttribute("data-id", row.id);
@@ -1159,7 +1159,7 @@ function loadFromHistory(item) {
               <td>${row.unit}</td>
               <td>${row.rate}</td>
               <td class="amount">${row.amt}</td>
-              <td><button onclick="removeRowManual('${row.id}')" class="remove-btn">Remove</button></td>
+              <td><button onclick="removeRowManual('${row.id}')" class="remove-btn"><span class="material-icons">close</span></button></td>
             `;
             row2 = document.createElement("tr");
             row2.setAttribute("data-id", row.id);
