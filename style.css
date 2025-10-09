@@ -259,17 +259,17 @@ body {
 
 
 .remove-btn {
-  color: white;
+  color: rgb(236, 73, 73);
   border: none;
-  background-color: rgb(236, 73, 73);
-  padding: 8px 15px;
-  border-radius: 15px;
-  font-weight: 750;
+  background-color: white;
+
+  padding: 5px 7px 2px 7px;
+  border-radius: 7px;
+  font-weight: 900;
 }
 
 .remove-btn:hover {
-  background-color: white;
-  color: rgb(236, 73, 73);
+  background-color: #cfcfcf50;
 }
 
 /* History Sidebar */
@@ -462,6 +462,7 @@ body {
     line-height: 0;
     /* Reset other properties that might affect the button size based on text */
   }
+
   /* END OF MOBILE TOOLBAR ADJUSTMENT */
 
 
