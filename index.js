@@ -14,6 +14,9 @@ let currentView = 'input'; // NEW: Tracks the main view: 'input' or 'bill'
 const themes = ['blue', 'green', 'red', 'purple', 'orange', 'dark'];
 let currentThemeIndex = 0;
 
+// Drag and drop variables
+let dragSrcEl = null;
+
 // Utility to get current state variables
 function getModeSpecificVars() {
     if (currentMode === 'area') {
@@ -76,6 +79,74 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(autoSave, 60000);
 });
 
+// --- Drag and Drop Functions ---
+
+function handleDragStart(e) {
+    dragSrcEl = this;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.outerHTML);
+    this.classList.add('dragging');
+}
+
+function handleDragOver(e) {
+    if (e.preventDefault) {
+        e.preventDefault();
+    }
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+}
+
+function handleDragEnter(e) {
+    this.classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+    this.classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+    
+    if (dragSrcEl !== this) {
+        const tbody = this.parentNode;
+        const rows = Array.from(tbody.querySelectorAll('tr[data-id]'));
+        const srcIndex = rows.indexOf(dragSrcEl);
+        const destIndex = rows.indexOf(this);
+        
+        if (srcIndex < destIndex) {
+            tbody.insertBefore(dragSrcEl, this.nextSibling);
+        } else {
+            tbody.insertBefore(dragSrcEl, this);
+        }
+        
+        updateSerialNumbers();
+        updateTotal();
+        saveToLocalStorage();
+        saveStateToHistory();
+    }
+    
+    this.classList.remove('drag-over');
+    return false;
+}
+
+function handleDragEnd(e) {
+    document.querySelectorAll('tr[data-id]').forEach(row => {
+        row.classList.remove('dragging', 'drag-over');
+    });
+}
+
+function addDragAndDropListeners(row) {
+    row.setAttribute('draggable', 'true');
+    row.addEventListener('dragstart', handleDragStart);
+    row.addEventListener('dragenter', handleDragEnter);
+    row.addEventListener('dragover', handleDragOver);
+    row.addEventListener('dragleave', handleDragLeave);
+    row.addEventListener('drop', handleDrop);
+    row.addEventListener('dragend', handleDragEnd);
+}
+
 // --- View Toggling ---
 
 function toggleView() {
@@ -96,6 +167,10 @@ function toggleView() {
         // Update button text to "SHOW INPUT"
         viewText.textContent = "SHOW INPUT";
         viewIcon.textContent = "edit"; 
+        
+        // Hide drag columns in bill view
+        hideTableColumn(document.getElementById("copyListArea"), 7, "none");
+        hideTableColumn(document.getElementById("copyListManual"), 7, "none");
     } else {
         // Switch to Input view (show active input container, hide bill container)
         bill.style.display = "none";
@@ -109,6 +184,10 @@ function toggleView() {
         // Update button text to "SHOW BILL"
         viewText.textContent = "SHOW BILL";
         viewIcon.textContent = "description";
+        
+        // Show drag columns in input view
+        hideTableColumn(document.getElementById("copyListArea"), 7, "table-cell");
+        hideTableColumn(document.getElementById("copyListManual"), 7, "table-cell");
     }
 }
 
@@ -157,11 +236,19 @@ function updateModeUI(showSwitchAlert) {
         areaContainer.style.display = isArea ? 'block' : 'none';
         manualContainer.style.display = isArea ? 'none' : 'block';
         billContainer.style.display = 'none';
+        
+        // Show drag columns in input view
+        hideTableColumn(copyListArea, 7, "table-cell");
+        hideTableColumn(copyListManual, 7, "table-cell");
     } else {
         // If view is 'bill', show bill container and hide all others
         areaContainer.style.display = 'none';
         manualContainer.style.display = 'none';
         billContainer.style.display = 'block';
+        
+        // Hide drag columns in bill view
+        hideTableColumn(copyListArea, 7, "none");
+        hideTableColumn(copyListManual, 7, "none");
     }
 
     // Toggle bill table visibility
@@ -342,11 +429,11 @@ function createTableRowArea(id, itemName, width, height, depth, measurement, not
     tr.setAttribute("data-id", id);
     if (editable) {
         tr.addEventListener('click', () => editRowArea(id));
+        addDragAndDropListeners(tr);
     }
 
     let particularsHtml = formatParticularsArea(itemName, width, height, depth, measurement, notes);
 
-    // The Remove button must call the mode-specific remove function
     const removeFn = editable ? `removeRowArea('${id}')` : `removeRowArea('${id}', true)`;
     
     tr.innerHTML = `
@@ -357,6 +444,7 @@ function createTableRowArea(id, itemName, width, height, depth, measurement, not
         <td>${quantity}</td>
         <td class="amount">${amount.toFixed(2)}</td>
         <td><button onclick="${removeFn}" class="remove-btn"><span class="material-icons">close</span></button></td>
+        <td><button class="drag-handle"><i class="fas fa-grip-lines"></i></button></td>
     `;
     return tr;
 }
@@ -486,11 +574,11 @@ function createTableRowManual(id, itemName, quantity, unit, rate, amount, notes,
     tr.setAttribute("data-id", id);
     if (editable) {
         tr.addEventListener('click', () => editRowManual(id));
+        addDragAndDropListeners(tr);
     }
 
     let particularsHtml = formatParticularsManual(itemName, notes);
     
-    // The Remove button must call the mode-specific remove function
     const removeFn = editable ? `removeRowManual('${id}')` : `removeRowManual('${id}', true)`;
 
     tr.innerHTML = `
@@ -501,6 +589,7 @@ function createTableRowManual(id, itemName, quantity, unit, rate, amount, notes,
         <td>${rate.toFixed(2)}</td>
         <td class="amount">${amount.toFixed(2)}</td>
         <td><button onclick="${removeFn}" class="remove-btn"><span class="material-icons">close</span></button></td>
+        <td><button class="drag-handle"><i class="fas fa-grip-lines"></i></button></td>
     `;
     return tr;
 }
@@ -543,8 +632,17 @@ function updateTotal() {
     const totalAmountId = vars.totalAmountId;
     const copyTotalAmountId = vars.copyTotalAmountId;
 
-    const total = Array.from(document.querySelectorAll(`#${createListId} tbody .amount`))
-        .reduce((sum, cell) => sum + parseFloat(cell.textContent || 0), 0);
+    const total = Array.from(document.querySelectorAll(`#${createListId} tbody tr[data-id]`))
+        .reduce((sum, row) => {
+            const amountCell = row.querySelector('.amount');
+            if (amountCell) {
+                const amountText = amountCell.textContent.trim();
+                // Only parse if it's a valid number (not "close" or other text)
+                const amountValue = parseFloat(amountText);
+                return sum + (isNaN(amountValue) ? 0 : amountValue);
+            }
+            return sum;
+        }, 0);
 
     // Update the UI for both item container and bill container totals
     document.getElementById(totalAmountId).textContent = total.toFixed(2);
@@ -657,14 +755,16 @@ function loadFromLocalStorage() {
             row1 = document.createElement("tr");
             row1.setAttribute("data-id", row.id);
             row1.addEventListener('click', () => editRowArea(row.id));
+            addDragAndDropListeners(row1);
             row1.innerHTML = `
               <td class="sr-no"></td>
               <td>${row.particulars}</td>
-              <td>${row.area}</td>
+              <td>${parseFloat(row.area).toFixed(2)} ft<sup>2</sup></td>  <!-- Fixed this line -->
               <td>${row.rate}</td>
               <td>${row.qty}</td>
               <td class="amount">${row.amt}</td>
               <td><button onclick="removeRowArea('${row.id}')" class="remove-btn"><span class="material-icons">close</span></button></td>
+              <td><button class="drag-handle"><i class="fas fa-grip-lines"></i></button></td>
             `;
 
             row2 = document.createElement("tr");
@@ -675,6 +775,7 @@ function loadFromLocalStorage() {
             row1 = document.createElement("tr");
             row1.setAttribute("data-id", row.id);
             row1.addEventListener('click', () => editRowManual(row.id));
+            addDragAndDropListeners(row1);
             row1.innerHTML = `
               <td class="sr-no"></td>
               <td>${row.particulars}</td>
@@ -683,6 +784,7 @@ function loadFromLocalStorage() {
               <td>${row.rate}</td>
               <td class="amount">${row.amt}</td>
               <td><button onclick="removeRowManual('${row.id}')" class="remove-btn"><span class="material-icons">close</span></button></td>
+              <td><button class="drag-handle"><i class="fas fa-grip-lines"></i></button></td>
             `;
 
             row2 = document.createElement("tr");
@@ -738,6 +840,7 @@ function downloadPDF() {
     const rateColIndex = isAreaMode ? 3 : 4;
     const areaColIndex = 2;
     const removeColIndex = isAreaMode ? 6 : 6;
+    const dragColIndex = isAreaMode ? 7 : 7; // Drag column is always the last column (index 7)
     
     // UI elements
     const billContainer = document.getElementById("bill-container");
@@ -771,8 +874,9 @@ function downloadPDF() {
     copyListArea.style.display = isAreaMode ? "table" : "none";
     copyListManual.style.display = isAreaMode ? "none" : "table";
 
-    // 3. Hide "Remove" column in the displayed bill table (copyList)
+    // 3. Hide "Remove" and "Drag" columns in the displayed bill table (copyList)
     hideTableColumn(document.getElementById(copyListId), removeColIndex, "none");
+    hideTableColumn(document.getElementById(copyListId), dragColIndex, "none");
     
     // 4. Hide Rate column if it was toggled off
     if (rateColumnHidden) {
@@ -808,6 +912,7 @@ function downloadPDF() {
 
             // Restore columns
             hideTableColumn(document.getElementById(copyListId), removeColIndex, "table-cell");
+            hideTableColumn(document.getElementById(copyListId), dragColIndex, "table-cell");
             
             if (rateColumnHidden) {
                  hideTableColumn(document.getElementById(copyListId), rateColIndex, "table-cell");
@@ -840,7 +945,7 @@ function saveStateToHistory() {
             const item = {
                 id: row.dataset.id,
                 particulars: cells[1].innerHTML,
-                amt: cells[cells.length - 2].textContent
+                amt: cells[5].textContent // Fixed: Amount is always at index 5
             };
             if (currentMode === 'area') {
                 item.area = cells[2].textContent;
@@ -923,14 +1028,16 @@ function restoreStateFromHistory() {
         if (currentMode === 'area') {
             row1.setAttribute("data-id", row.id);
             row1.addEventListener('click', () => editRowArea(row.id));
+            addDragAndDropListeners(row1);
             row1.innerHTML = `
                 <td class="sr-no"></td>
                 <td>${row.particulars}</td>
-                <td>${row.area}</td>
+                <td>${parseFloat(row.area).toFixed(2)} ft<sup>2</sup></td>  <!-- Fixed this line -->
                 <td>${row.rate}</td>
                 <td>${row.qty}</td>
                 <td class="amount">${row.amt}</td>
                 <td><button onclick="removeRowArea('${row.id}')" class="remove-btn"><span class="material-icons">close</span></button></td>
+                <td><button class="drag-handle"><i class="fas fa-grip-lines"></i></button></td>
             `;
             row2.setAttribute("data-id", row.id);
             row2.addEventListener('click', () => editRowArea(row.id));
@@ -938,6 +1045,7 @@ function restoreStateFromHistory() {
         } else {
             row1.setAttribute("data-id", row.id);
             row1.addEventListener('click', () => editRowManual(row.id));
+            addDragAndDropListeners(row1);
             row1.innerHTML = `
                 <td class="sr-no"></td>
                 <td>${row.particulars}</td>
@@ -946,6 +1054,7 @@ function restoreStateFromHistory() {
                 <td>${row.rate}</td>
                 <td class="amount">${row.amt}</td>
                 <td><button onclick="removeRowManual('${row.id}')" class="remove-btn"><span class="material-icons">close</span></button></td>
+                <td><button class="drag-handle"><i class="fas fa-grip-lines"></i></button></td>
             `;
             row2.setAttribute("data-id", row.id);
             row2.addEventListener('click', () => editRowManual(row.id));
@@ -1135,14 +1244,16 @@ function loadFromHistory(item) {
             row1 = document.createElement("tr");
             row1.setAttribute("data-id", row.id);
             row1.addEventListener('click', () => editRowArea(row.id));
+            addDragAndDropListeners(row1);
             row1.innerHTML = `
               <td class="sr-no"></td>
               <td>${row.particulars}</td>
-              <td>${row.area}</td>
+              <td>${parseFloat(row.area).toFixed(2)} ft<sup>2</sup></td>  <!-- Fixed this line -->
               <td>${row.rate}</td>
               <td>${row.qty}</td>
               <td class="amount">${row.amt}</td>
               <td><button onclick="removeRowArea('${row.id}')" class="remove-btn"><span class="material-icons">close</span></button></td>
+              <td><button class="drag-handle"><i class="fas fa-grip-lines"></i></button></td>
             `;
             row2 = document.createElement("tr");
             row2.setAttribute("data-id", row.id);
@@ -1152,6 +1263,7 @@ function loadFromHistory(item) {
             row1 = document.createElement("tr");
             row1.setAttribute("data-id", row.id);
             row1.addEventListener('click', () => editRowManual(row.id));
+            addDragAndDropListeners(row1);
             row1.innerHTML = `
               <td class="sr-no"></td>
               <td>${row.particulars}</td>
@@ -1160,6 +1272,7 @@ function loadFromHistory(item) {
               <td>${row.rate}</td>
               <td class="amount">${row.amt}</td>
               <td><button onclick="removeRowManual('${row.id}')" class="remove-btn"><span class="material-icons">close</span></button></td>
+              <td><button class="drag-handle"><i class="fas fa-grip-lines"></i></button></td>
             `;
             row2 = document.createElement("tr");
             row2.setAttribute("data-id", row.id);
