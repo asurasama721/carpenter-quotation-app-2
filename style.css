@@ -272,6 +272,29 @@ body {
   background-color: #cfcfcf50;
 }
 
+/* Drag and drop styles */
+.drag-handle {
+  cursor: grab;
+  color: var(--primary-color);
+  font-size: 16px;
+  padding: 5px;
+  border: none;
+  background: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.dragging {
+  opacity: 0.5;
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+.drag-over {
+  border-top: 2px solid var(--primary-color);
+}
+
 /* History Sidebar */
 #history-sidebar {
   position: fixed;
