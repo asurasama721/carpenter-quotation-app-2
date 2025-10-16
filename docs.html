@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billig App - Complete Documentation</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --text-color: #333;
+            --bg-color: #f9f9f9;
+            --border-color: #ddd;
+            --highlight-color: #f1c40f;
+            --total-bg: #ecf0f1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin-top: 30px;
+        }
+
+        .section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background-color: var(--bg-color);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .feature-card h4 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .button-demo {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 4px;
+            margin: 5px;
+            font-weight: bold;
+        }
+
+        .button-demo .material-icons {
+            font-size: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        .ui-preview {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            background-color: white;
+        }
+
+        .mode-comparison {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mode-card {
+            flex: 1;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: var(--bg-color);
+        }
+
+        .mode-card h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .code-block {
+            background-color: #f5f5f5;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        .tip {
+            background-color: #e7f3ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .warning {
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .toc {
+            background-color: var(--bg-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .toc ul {
+            padding-left: 20px;
+        }
+
+        .toc li {
+            margin-bottom: 10px;
+        }
+
+        .toc a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .drag-demo {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .drag-item {
+            background-color: white;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            cursor: move;
+            display: flex;
+            align-items: center;
+        }
+
+        .drag-item .material-icons {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .mode-comparison {
+                flex-direction: column;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Billig App Documentation</h1>
+            <p>Complete guide to using the Billig billing application</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#getting-started">Getting Started</a></li>
+                <li><a href="#ui-overview">UI Overview</a></li>
+                <li><a href="#modes">Area vs Manual Mode</a></li>
+                <li><a href="#features">Features</a>
+                    <ul>
+                        <li><a href="#toolbar">Toolbar Functions</a></li>
+                        <li><a href="#drag-drop">Drag & Drop Reordering</a></li>
+                        <li><a href="#bill-view">Bill View</a></li>
+                        <li><a href="#history">History System</a></li>
+                        <li><a href="#themes">Theme System</a></li>
+                        <li><a href="#pdf">PDF Generation</a></li>
+                    </ul>
+                </li>
+                <li><a href="#workflows">Workflows</a></li>
+                <li><a href="#tips">Tips & Best Practices</a></li>
+            </ul>
+        </div>
+
+        <div class="section" id="introduction">
+            <h2>Introduction</h2>
+            <p>Billig is a comprehensive billing application designed for carpenters, contractors, and woodworking professionals. It provides two distinct calculation modes to accommodate different billing needs:</p>
+            <ul>
+                <li><strong>Area Mode:</strong> Calculate costs based on dimensions (width, height, depth)</li>
+                <li><strong>Manual Mode:</strong> Add items with predefined quantities and rates</li>
+            </ul>
+            <p>The application automatically saves your work, supports undo/redo operations, features drag-and-drop reordering, and can generate professional PDF invoices.</p>
+        </div>
+
+        <div class="section" id="getting-started">
+            <h2>Getting Started</h2>
+            <p>When you first open Billig, the application will:</p>
+            <ul>
+                <li>Load in <strong>Area Mode</strong> by default (or your last used mode)</li>
+                <li>Display the current date in the bill date field</li>
+                <li>Show the input interface for adding items</li>
+            </ul>
+            <p>To begin creating a bill:</p>
+            <ol>
+                <li>Enter your company details in the editable fields at the top</li>
+                <li>Fill in customer information in the form fields</li>
+                <li>Start adding items using either Area or Manual mode</li>
+                <li>Reorder items by dragging them if needed</li>
+                <li>Switch to Bill View to see the final invoice</li>
+                <li>Download as PDF when ready</li>
+            </ol>
+        </div>
+
+        <div class="section" id="ui-overview">
+            <h2>UI Overview</h2>
+            <p>The Billig interface consists of three main sections:</p>
+            
+            <h3>1. Toolbar</h3>
+            <p>Located at the top, the toolbar provides quick access to all major functions:</p>
+            <div class="ui-preview">
+                <div class="button-demo"><span class="material-icons">description</span>SHOW BILL</div>
+                <div class="button-demo"><span class="material-icons">calculate</span>AREA MODE</div>
+                <div class="button-demo"><span class="material-icons">history</span>HISTORY</div>
+                <div class="button-demo"><span class="material-icons">undo</span>UNDO</div>
+                <div class="button-demo"><span class="material-icons">redo</span>REDO</div>
+                <div class="button-demo"><span class="material-icons">auto_delete</span>CLEAR ALL DATA</div>
+                <div class="button-demo"><span class="material-icons">picture_as_pdf</span>PDF</div>
+                <div class="button-demo"><span class="material-icons">palette</span>CHANGE THEME</div>
+                <div class="button-demo"><span class="material-icons">visibility_off</span>RATE</div>
+            </div>
+
+            <h3>2. Input Area</h3>
+            <p>This is where you add and manage bill items. The interface changes based on your selected mode (Area or Manual).</p>
+
+            <h3>3. Bill View</h3>
+            <p>A preview of the final bill that customers will see, with professional formatting suitable for printing or PDF export.</p>
+        </div>
+
+        <div class="section" id="modes">
+            <h2>Area Mode vs Manual Mode</h2>
+            <p>Billig offers two distinct calculation methods to suit different billing scenarios:</p>
+            
+            <div class="mode-comparison">
+                <div class="mode-card">
+                    <h4>Area Mode</h4>
+                    <p><strong>Best for:</strong> Furniture, cabinets, and items priced by area</p>
+                    <ul>
+                        <li>Input width, height, and depth</li>
+                        <li>Select measurement unit (ft, inch, cm, mm)</li>
+                        <li>Area automatically calculated in square feet</li>
+                        <li>Cost = Area × Rate × Quantity</li>
+                        <li>Predefined item list for common furniture types</li>
+                    </ul>
+                </div>
+                
+                <div class="mode-card">
+                    <h4>Manual Mode</h4>
+                    <p><strong>Best for:</strong> Materials, hardware, and items with fixed quantities</p>
+                    <ul>
+                        <li>Direct quantity and rate input</li>
+                        <li>Custom units (nos, pair, kg, ft, sheet, etc.)</li>
+                        <li>Cost = Quantity × Rate</li>
+                        <li>Extensive predefined list of materials and hardware</li>
+                        <li>Perfect for lumber, plywood, hinges, and other supplies</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="tip">
+                <p><strong>Tip:</strong> You can switch between modes at any time. Your data is automatically saved and restored when switching back.</p>
+            </div>
+        </div>
+
+        <div class="section" id="features">
+            <h2>Features</h2>
+            
+            <div id="toolbar">
+                <h3>Toolbar Functions</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Show Bill / Show Input</h4>
+                        <p>Toggles between the input interface and bill preview. The bill view shows exactly what will appear in the PDF.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>Area Mode / Manual Mode</h4>
+                        <p>Switches between the two calculation methods. The button text and icon update to reflect the current mode.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>History</h4>
+                        <p>Opens a sidebar showing your previously saved bills. Click any history item to restore it.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>Undo / Redo</h4>
+                        <p>Step backward and forward through your changes. Supports multiple levels of undo/redo.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>Clear All Data</h4>
+                        <p>Resets the current bill, clearing all items and customer information while preserving company details. <strong>Automatically saves the current bill to history before clearing.</strong></p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>PDF</h4>
+                        <p>Generates and downloads a professional PDF invoice. The PDF matches the Bill View exactly.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>Change Theme</h4>
+                        <p>Cycles through different color themes (Blue, Green, Red, Purple, Orange, Dark). Your preference is saved.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>Rate</h4>
+                        <p>Toggles the visibility of rate columns in both input and bill views. Useful for sharing bills without revealing pricing.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="drag-drop">
+                <h3>Drag & Drop Reordering</h3>
+                <p>Billig includes a powerful drag-and-drop feature that allows you to reorder items in your bill:</p>
+                
+                <div class="drag-demo">
+                    <p><strong>How to use drag and drop:</strong></p>
+                    <div class="drag-item">
+                        <span class="material-icons">drag_indicator</span>
+                        <span>Click and hold any item row</span>
+                    </div>
+                    <div class="drag-item">
+                        <span class="material-icons">drag_indicator</span>
+                        <span>Drag it to your desired position</span>
+                    </div>
+                    <div class="drag-item">
+                        <span class="material-icons">drag_indicator</span>
+                        <span>Release to drop the item in its new position</span>
+                    </div>
+                </div>
+                
+                <p><strong>Features of the drag-and-drop system:</strong></p>
+                <ul>
+                    <li>Visual feedback during dragging with a "ghost" image of the item</li>
+                    <li>Automatic serial number updates after reordering</li>
+                    <li>Works in both Area and Manual modes</li>
+                    <li>Maintains all item data during reordering</li>
+                    <li>Updates both the input table and bill preview simultaneously</li>
+                </ul>
+                
+                <div class="tip">
+                    <p><strong>Tip:</strong> Use drag and drop to organize your bill items in a logical sequence, such as grouping similar items together or placing high-value items at the top.</p>
+                </div>
+            </div>
+            
+            <div id="bill-view">
+                <h3>Bill View</h3>
+                <p>The Bill View displays a professionally formatted invoice with:</p>
+                <ul>
+                    <li>Your company details at the top</li>
+                    <li>Customer information section</li>
+                    <li>Itemized list with calculations</li>
+                    <li>Automatically calculated totals</li>
+                    <li>Clean, print-ready formatting</li>
+                </ul>
+                <p>When you toggle the Rate button, the rate columns are hidden in the Bill View, allowing you to share price-obscured estimates with clients.</p>
+            </div>
+            
+            <div id="history">
+                <h3>History System</h3>
+                <p>Billig maintains two types of history:</p>
+                
+                <h4>1. Undo/Redo History</h4>
+                <p>Tracks your changes within the current session, allowing you to revert or reapply actions.</p>
+                
+                <h4>2. Bill History</h4>
+                <p>Saves complete bills that you can restore later. Each history entry includes:</p>
+                <ul>
+                    <li>Customer name and bill number</li>
+                    <li>Date of creation</li>
+                    <li>Mode used (Area or Manual)</li>
+                    <li>All items and calculations</li>
+                </ul>
+                
+                <p><strong>Key History Features:</strong></p>
+                <ul>
+                    <li><strong>Auto-save to history:</strong> When you click "Clear All Data", the current bill is automatically saved to history before clearing</li>
+                    <li><strong>One-click restoration:</strong> Click any bill in the history sidebar to fully restore it to the workspace</li>
+                    <li><strong>Mode switching:</strong> The app automatically switches to the correct mode when restoring a bill from history</li>
+                    <li><strong>Persistent storage:</strong> History is saved in your browser's local storage and persists between sessions</li>
+                </ul>
+                
+                <div class="tip">
+                    <p><strong>Tip:</strong> The history sidebar can be closed by clicking the X button, clicking outside the sidebar, or pressing the History button again.</p>
+                </div>
+            </div>
+            
+            <div id="themes">
+                <h3>Theme System</h3>
+                <p>Billig includes six color themes:</p>
+                <ul>
+                    <li><strong>Blue:</strong> Default professional theme</li>
+                    <li><strong>Green:</strong> Fresh, nature-inspired</li>
+                    <li><strong>Red:</strong> Bold and attention-grabbing</li>
+                    <li><strong>Purple:</strong> Creative and distinctive</li>
+                    <li><strong>Orange:</strong> Energetic and warm</li>
+                    <li><strong>Dark:</strong> Reduced eye strain in low light</li>
+                </ul>
+                <p>Your theme preference is saved automatically and restored when you revisit the application.</p>
+            </div>
+            
+            <div id="pdf">
+                <h3>PDF Generation</h3>
+                <p>The PDF feature creates a print-ready invoice with the following properties:</p>
+                <ul>
+                    <li>A4 paper size, portrait orientation</li>
+                    <li>High resolution for crisp text and lines</li>
+                    <li>Automatic filename based on customer name and bill number</li>
+                    <li>Hidden toolbar and interface elements</li>
+                    <li>Preserved column visibility settings (rate columns can be hidden)</li>
+                </ul>
+                
+                <div class="warning">
+                    <p><strong>Note:</strong> For best PDF results, use the Bill View to verify the layout before generating the PDF.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="workflows">
+            <h2>Common Workflows</h2>
+            
+            <h3>Creating a New Bill (Area Mode)</h3>
+            <ol>
+                <li>Ensure you're in Area Mode (button should say "AREA MODE")</li>
+                <li>Enter company and customer details</li>
+                <li>For each item:
+                    <ul>
+                        <li>Enter width, height, and depth (if applicable)</li>
+                        <li>Select measurement unit</li>
+                        <li>Enter rate per square foot</li>
+                        <li>Enter quantity</li>
+                        <li>Select or type item name</li>
+                        <li>Add any notes in the textarea</li>
+                        <li>Click "Add Item"</li>
+                    </ul>
+                </li>
+                <li>Drag and drop items to reorder them if needed</li>
+                <li>Review items in the table below</li>
+                <li>Click "SHOW BILL" to preview the final invoice</li>
+                <li>Click "PDF" to download the invoice</li>
+            </ol>
+            
+            <h3>Creating a New Bill (Manual Mode)</h3>
+            <ol>
+                <li>Switch to Manual Mode using the mode toggle button</li>
+                <li>Enter company and customer details</li>
+                <li>For each item:
+                    <ul>
+                        <li>Select or type item name from the extensive list</li>
+                        <li>Enter quantity</li>
+                        <li>Select or enter unit (nos, kg, ft, etc.)</li>
+                        <li>Enter rate per unit</li>
+                        <li>Add any notes in the textarea</li>
+                        <li>Click "Add Item"</li>
+                    </ul>
+                </li>
+                <li>Drag and drop items to reorder them if needed</li>
+                <li>Review items in the table below</li>
+                <li>Click "SHOW BILL" to preview the final invoice</li>
+                <li>Click "PDF" to download the invoice</li>
+            </ol>
+            
+            <h3>Editing Existing Items</h3>
+            <ol>
+                <li>Click on any item in the table to load its details into the input form</li>
+                <li>The "Add Item" button will change to "Update Item"</li>
+                <li>Make your changes to the form fields</li>
+                <li>Click "Update Item" to save changes</li>
+            </ol>
+            
+            <h3>Reordering Items with Drag & Drop</h3>
+            <ol>
+                <li>Position your cursor over any item row in the table</li>
+                <li>Click and hold the item</li>
+                <li>Drag the item to your desired position in the list</li>
+                <li>Release the mouse button to drop the item</li>
+                <li>Serial numbers will automatically update to reflect the new order</li>
+            </ol>
+            
+            <h3>Using History</h3>
+            <ol>
+                <li>Click the "HISTORY" button to open the history sidebar</li>
+                <li>Browse through your previously saved bills</li>
+                <li>Click any history item to load it into the current workspace</li>
+                <li>The application will automatically switch to the correct mode</li>
+                <li>Make any necessary changes and save as a new bill</li>
+            </ol>
+            
+            <h3>Clearing Data with History Preservation</h3>
+            <ol>
+                <li>When you click "Clear All Data", the app automatically saves your current bill to history</li>
+                <li>All items and customer information are cleared from the workspace</li>
+                <li>Company details are preserved</li>
+                <li>You can restore the cleared bill from the history sidebar if needed</li>
+            </ol>
+        </div>
+
+        <div class="section" id="tips">
+            <h2>Tips & Best Practices</h2>
+            
+            <h3>General Tips</h3>
+            <ul>
+                <li><strong>Auto-save:</strong> The application automatically saves your work every 60 seconds and after most actions.</li>
+                <li><strong>Use notes:</strong> The notes field is valuable for adding specifications, colors, or special instructions.</li>
+                <li><strong>Predefined items:</strong> Take advantage of the extensive predefined item lists to save time and ensure consistency.</li>
+                <li><strong>Mobile friendly:</strong> The interface adapts to mobile devices, with a compact toolbar and responsive layout.</li>
+            </ul>
+            
+            <h3>Area Mode Tips</h3>
+            <ul>
+                <li>You can mix measurement units - the app automatically converts everything to square feet for calculation.</li>
+                <li>Depth is optional and doesn't affect area calculations (which use only width and height).</li>
+                <li>Use descriptive item names to make bills clearer to customers.</li>
+            </ul>
+            
+            <h3>Manual Mode Tips</h3>
+            <ul>
+                <li>The unit field is flexible - you can use standard units or create custom ones as needed.</li>
+                <li>The extensive material list includes common woodworking supplies from plywood to specialized hardware.</li>
+                <li>You can type directly in the item field even when using the predefined list.</li>
+            </ul>
+            
+            <h3>Drag & Drop Tips</h3>
+            <ul>
+                <li>Group similar items together for a more organized bill</li>
+                <li>Place high-value or important items at the top where they'll be noticed first</li>
+                <li>Use drag and drop to create logical sections in complex bills</li>
+            </ul>
+            
+            <h3>History Tips</h3>
+            <ul>
+                <li>Use "Clear All Data" when starting a new bill - your previous work is automatically saved to history</li>
+                <li>Restore bills from history as templates for similar projects</li>
+                <li>History items are stored separately for Area and Manual modes</li>
+            </ul>
+            
+            <h3>Bill Presentation Tips</h3>
+            <ul>
+                <li>Use the "Rate" toggle to hide pricing when sharing estimates with clients.</li>
+                <li>Always preview the bill before generating PDF to catch any formatting issues.</li>
+                <li>Include your company logo by replacing the default "asuralogo.png" file.</li>
+            </ul>
+            
+            <div class="warning">
+                <p><strong>Important:</strong> While the application auto-saves frequently, it's good practice to manually save important bills to history before closing the browser.</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Technical Details</h2>
+            <p>Billig is built using standard web technologies:</p>
+            <ul>
+                <li><strong>HTML5:</strong> For structure and semantics</li>
+                <li><strong>CSS3:</strong> For styling and responsive design</li>
+                <li><strong>JavaScript:</strong> For application logic and interactivity</li>
+                <li><strong>Local Storage:</strong> For data persistence in the browser</li>
+                <li><strong>html2pdf.js:</strong> For PDF generation</li>
+                <li><strong>Material Icons:</strong> For the icon set</li>
+                <li><strong>HTML5 Drag & Drop API:</strong> For item reordering functionality</li>
+            </ul>
+            <p>The application works entirely in the browser with no server requirements, making it easy to deploy and use.</p>
+        </div>
+    </div>
+
+    <footer style="background-color: var(--primary-color); color: white; padding: 20px 0; margin-top: 40px;">
+        <div class="container" style="text-align: center;">
+            <p>Billig App Documentation | Created for the Billig Billing Application</p>
+        </div>
+    </footer>
+</body>
+</html>
