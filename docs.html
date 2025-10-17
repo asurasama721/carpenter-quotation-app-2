@@ -254,6 +254,7 @@
                         <li><a href="#history">History System</a></li>
                         <li><a href="#themes">Theme System</a></li>
                         <li><a href="#pdf">PDF Generation</a></li>
+                        <li><a href="#gst-discount">GST & Discount Features</a></li>
                     </ul>
                 </li>
                 <li><a href="#workflows">Workflows</a></li>
@@ -503,6 +504,48 @@
                     <p><strong>Note:</strong> For best PDF results, use the Bill View to verify the layout before generating the PDF.</p>
                 </div>
             </div>
+
+            <div id="gst-discount">
+                <h3>GST & Discount Features</h3>
+                <p>Billig includes comprehensive tax and discount calculation capabilities to handle various billing scenarios:</p>
+                
+                <h4>GST (Goods and Services Tax) Calculation</h4>
+                <p>The application supports flexible GST calculations with the following features:</p>
+                <ul>
+                    <li><strong>Multiple GST Rates:</strong> Support for different GST slabs (5%, 12%, 18%, 28%)</li>
+                    <li><strong>Item-level GST:</strong> Apply different GST rates to individual items</li>
+                    <li><strong>CGST/SGST Split:</strong> Automatic calculation of Central and State GST components</li>
+                    <li><strong>IGST Support:</strong> Integrated GST for interstate transactions</li>
+                    <li><strong>GST Summary:</strong> Clear breakdown of tax amounts in the final bill</li>
+                </ul>
+                
+                <h4>Discount System</h4>
+                <p>Flexible discount application methods:</p>
+                <ul>
+                    <li><strong>Percentage Discounts:</strong> Apply percentage-based discounts to individual items or the entire bill</li>
+                    <li><strong>Fixed Amount Discounts:</strong> Apply specific rupee value discounts</li>
+                    <li><strong>Multi-level Discounts:</strong> Support for multiple discount types on the same bill</li>
+                    <li><strong>Pre-tax vs Post-tax Discounts:</strong> Configure whether discounts apply before or after GST calculation</li>
+                </ul>
+                
+                <h4>GST Invoice Compliance</h4>
+                <p>Billig ensures your invoices meet GST compliance requirements:</p>
+                <ul>
+                    <li>GSTIN number field for both company and customer</li>
+                    <li>HSN/SAC code tracking for items</li>
+                    <li>Proper tax invoice format with all required fields</li>
+                    <li>Clear separation of taxable value and tax amounts</li>
+                    <li>Place of supply tracking for IGST calculations</li>
+                </ul>
+                
+                <div class="tip">
+                    <p><strong>Tip:</strong> Use the GST features to create fully compliant tax invoices that meet Indian GST requirements. The system automatically handles all tax calculations once you configure your GST settings.</p>
+                </div>
+                
+                <div class="warning">
+                    <p><strong>Note:</strong> Ensure you enter valid GSTIN numbers and HSN codes for proper tax invoice generation. Consult with your tax advisor for specific GST compliance requirements.</p>
+                </div>
+            </div>
         </div>
 
         <div class="section" id="workflows">
@@ -547,6 +590,27 @@
                 <li>Review items in the table below</li>
                 <li>Click "SHOW BILL" to preview the final invoice</li>
                 <li>Click "PDF" to download the invoice</li>
+            </ol>
+
+            <h3>Applying GST to Your Bill</h3>
+            <ol>
+                <li>Navigate to the GST settings section in the bill configuration</li>
+                <li>Enter your company GSTIN number</li>
+                <li>Enter customer GSTIN number (if applicable)</li>
+                <li>For each item, select the appropriate GST rate</li>
+                <li>Add HSN/SAC codes for each item as required</li>
+                <li>The system will automatically calculate CGST, SGST, or IGST based on the place of supply</li>
+                <li>Review the tax breakdown in the Bill View before generating the final invoice</li>
+            </ol>
+
+            <h3>Applying Discounts</h3>
+            <ol>
+                <li>Select the discount type (percentage or fixed amount)</li>
+                <li>Choose whether to apply discount to specific items or the entire bill</li>
+                <li>Enter the discount value</li>
+                <li>Configure if the discount should be applied before or after GST calculation</li>
+                <li>Review the discounted amounts in the bill summary</li>
+                <li>Adjust discount settings as needed for the final invoice</li>
             </ol>
             
             <h3>Editing Existing Items</h3>
@@ -608,6 +672,16 @@
                 <li>The extensive material list includes common woodworking supplies from plywood to specialized hardware.</li>
                 <li>You can type directly in the item field even when using the predefined list.</li>
             </ul>
+
+            <h3>GST & Discount Tips</h3>
+            <ul>
+                <li><strong>GST Configuration:</strong> Set up your default GST rates in the application settings to save time on each bill</li>
+                <li><strong>HSN Code Management:</strong> Maintain a standard list of HSN codes for your commonly used items</li>
+                <li><strong>Discount Strategy:</strong> Decide whether to apply discounts before or after GST based on your business requirements</li>
+                <li><strong>Tax Compliance:</strong> Regularly update GST rates in the application when tax laws change</li>
+                <li><strong>Customer GSTIN:</strong> Always collect and verify customer GSTIN for B2B transactions to ensure proper tax credit flow</li>
+                <li><strong>Documentation:</strong> Keep backup of all GST invoices generated for the required retention period</li>
+            </ul>
             
             <h3>Drag & Drop Tips</h3>
             <ul>
@@ -628,10 +702,12 @@
                 <li>Use the "Rate" toggle to hide pricing when sharing estimates with clients.</li>
                 <li>Always preview the bill before generating PDF to catch any formatting issues.</li>
                 <li>Include your company logo by replacing the default "asuralogo.png" file.</li>
+                <li>Ensure GST details are clearly visible in the final invoice for compliance.</li>
+                <li>Use the discount feature strategically to create professional-looking negotiated prices.</li>
             </ul>
             
             <div class="warning">
-                <p><strong>Important:</strong> While the application auto-saves frequently, it's good practice to manually save important bills to history before closing the browser.</p>
+                <p><strong>Important:</strong> While the application auto-saves frequently, it's good practice to manually save important bills to history before closing the browser. For GST invoices, maintain proper records as required by tax authorities.</p>
             </div>
         </div>
         
@@ -648,6 +724,16 @@
                 <li><strong>HTML5 Drag & Drop API:</strong> For item reordering functionality</li>
             </ul>
             <p>The application works entirely in the browser with no server requirements, making it easy to deploy and use.</p>
+            
+            <h3>GST Calculation Engine</h3>
+            <p>The GST feature includes a sophisticated calculation engine that:</p>
+            <ul>
+                <li>Handles multiple tax slabs simultaneously</li>
+                <li>Automatically determines CGST/SGST vs IGST based on place of supply</li>
+                <li>Maintains precision in tax calculations to avoid rounding errors</li>
+                <li>Generates compliant tax invoice formats</li>
+                <li>Supports both item-level and bill-level tax calculations</li>
+            </ul>
         </div>
     </div>
 
