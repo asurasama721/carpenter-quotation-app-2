@@ -17,6 +17,10 @@ let currentThemeIndex = 0;
 // Drag and drop variables
 let dragSrcEl = null;
 
+// GST and Discount variables
+let discountPercent = 0;
+let gstPercent = 0;
+
 // Utility to get current state variables
 function getModeSpecificVars() {
     if (currentMode === 'area') {
@@ -62,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadFromLocalStorage(); // Load bill data for the current mode
     loadHistoryFromLocalStorage(); // Load history for the current mode
     loadSavedTheme(); // Load saved theme
+    loadTaxSettings(); // Load tax settings
     saveStateToHistory(); // Save the initial state to history
 
     // Automatically set the current date in dd-mm-yyyy format
@@ -78,6 +83,120 @@ document.addEventListener('DOMContentLoaded', function() {
     // Start autosave every 60 seconds
     setInterval(autoSave, 60000);
 });
+
+// --- Discount Modal Functions ---
+function openDiscountModal() {
+    const modal = document.getElementById('discount-modal');
+    const discountInput = document.getElementById('discount-input');
+    
+    // Set current discount value
+    discountInput.value = discountPercent;
+    
+    modal.style.display = 'block';
+}
+
+function closeDiscountModal() {
+    const modal = document.getElementById('discount-modal');
+    modal.style.display = 'none';
+}
+
+function applyDiscountSettings() {
+    const discountInput = document.getElementById('discount-input');
+    
+    const newDiscount = parseFloat(discountInput.value) || 0;
+    
+    // Validate input
+    if (newDiscount < 0 || newDiscount > 100) {
+        // Removed alert
+        return;
+    }
+    
+    discountPercent = newDiscount;
+    
+    saveTaxSettings();
+    updateTotal();
+    saveToLocalStorage();
+    saveStateToHistory();
+    closeDiscountModal();
+}
+
+// --- GST Modal Functions ---
+function openGSTModal() {
+    const modal = document.getElementById('gst-modal');
+    const gstInput = document.getElementById('gst-input');
+    const gstinInput = document.getElementById('gstin-input');
+    
+    // Set current values
+    gstInput.value = gstPercent;
+    gstinInput.value = document.getElementById('custGSTIN').value || '';
+    
+    modal.style.display = 'block';
+}
+
+function closeGSTModal() {
+    const modal = document.getElementById('gst-modal');
+    modal.style.display = 'none';
+}
+
+function applyGSTSettings() {
+    const gstInput = document.getElementById('gst-input');
+    const gstinInput = document.getElementById('gstin-input');
+    
+    const newGST = parseFloat(gstInput.value) || 0;
+    const newGSTIN = gstinInput.value.trim();
+    
+    // Validate input
+    if (newGST < 0 || newGST > 100) {
+        // Removed alert
+        return;
+    }
+    
+    gstPercent = newGST;
+    
+    // Update GSTIN in customer details
+    document.getElementById('custGSTIN').value = newGSTIN;
+    
+    saveTaxSettings();
+    updateTotal();
+    saveToLocalStorage();
+    saveStateToHistory();
+    closeGSTModal();
+}
+
+function saveGSTIN() {
+    saveToLocalStorage();
+    saveStateToHistory();
+}
+
+function saveTaxSettings() {
+    const taxSettings = {
+        discountPercent: discountPercent,
+        gstPercent: gstPercent
+    };
+    localStorage.setItem('taxSettings', JSON.stringify(taxSettings));
+}
+
+function loadTaxSettings() {
+    const saved = localStorage.getItem('taxSettings');
+    if (saved) {
+        const taxSettings = JSON.parse(saved);
+        discountPercent = taxSettings.discountPercent || 0;
+        gstPercent = taxSettings.gstPercent || 0;
+    }
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const discountModal = document.getElementById('discount-modal');
+    const gstModal = document.getElementById('gst-modal');
+    
+    if (event.target == discountModal) {
+        closeDiscountModal();
+    }
+    if (event.target == gstModal) {
+        closeGSTModal();
+    }
+}
 
 // --- Drag and Drop Functions ---
 
@@ -644,9 +763,52 @@ function updateTotal() {
             return sum;
         }, 0);
 
+    // Calculate discount and GST
+    const discountAmount = total * (discountPercent / 100);
+    const subtotalAfterDiscount = total - discountAmount;
+    const gstAmount = subtotalAfterDiscount * (gstPercent / 100);
+    const grandTotal = subtotalAfterDiscount + gstAmount;
+
     // Update the UI for both item container and bill container totals
     document.getElementById(totalAmountId).textContent = total.toFixed(2);
     document.getElementById(copyTotalAmountId).textContent = total.toFixed(2);
+
+    // Update discount display
+    const discountRow = document.getElementById('discount-row');
+    const discountPercentSpan = document.getElementById('discount-percent');
+    const discountAmountTd = document.getElementById('discount-amount');
+    
+    if (discountPercent > 0) {
+        discountRow.style.display = '';
+        discountPercentSpan.textContent = discountPercent;
+        discountAmountTd.textContent = `-${discountAmount.toFixed(2)}`;
+    } else {
+        discountRow.style.display = 'none';
+    }
+
+    // Update GST display
+    const gstRow = document.getElementById('gst-row');
+    const gstPercentSpan = document.getElementById('gst-percent');
+    const gstAmountTd = document.getElementById('gst-amount');
+    const grandTotalRow = document.getElementById('grand-total-row');
+    const grandTotalAmount = document.getElementById('grand-total-amount');
+    
+    if (gstPercent > 0) {
+        gstRow.style.display = '';
+        gstPercentSpan.textContent = gstPercent;
+        gstAmountTd.textContent = `+${gstAmount.toFixed(2)}`;
+        grandTotalRow.style.display = '';
+        grandTotalAmount.textContent = grandTotal.toFixed(2);
+    } else {
+        gstRow.style.display = 'none';
+        grandTotalRow.style.display = 'none';
+    }
+    
+    // If only discount is applied, show grand total
+    if (discountPercent > 0 && gstPercent === 0) {
+        grandTotalRow.style.display = '';
+        grandTotalAmount.textContent = subtotalAfterDiscount.toFixed(2);
+    }
 }
 
 function saveToLocalStorage() {
@@ -666,7 +828,13 @@ function saveToLocalStorage() {
             billNo: document.getElementById("billNo").value,
             address: document.getElementById("custAddr").value,
             date: document.getElementById("billDate").value,
-            phone: document.getElementById("custPhone").value
+            phone: document.getElementById("custPhone").value,
+            gstin: document.getElementById("custGSTIN").value
+        },
+        // Add tax settings to saved data
+        taxSettings: {
+            discountPercent: discountPercent,
+            gstPercent: gstPercent
         }
     };
 
@@ -730,6 +898,13 @@ function loadFromLocalStorage() {
     document.getElementById("custAddr").value = data.customer.address;
     document.getElementById("billDate").value = data.customer.date;
     document.getElementById("custPhone").value = data.customer.phone;
+    document.getElementById("custGSTIN").value = data.customer.gstin || '';
+
+    // Load tax settings if they exist
+    if (data.taxSettings) {
+        discountPercent = data.taxSettings.discountPercent || 0;
+        gstPercent = data.taxSettings.gstPercent || 0;
+    }
 
     let maxId = 0;
     data.items.forEach(row => {
@@ -812,6 +987,7 @@ function clearAllData() {
     document.getElementById("custAddr").value = "";
     document.getElementById("billDate").value = "";
     document.getElementById("custPhone").value = "";
+    document.getElementById("custGSTIN").value = "";
 
     const vars = getModeSpecificVars();
     const createListId = vars.createListId;
@@ -827,6 +1003,10 @@ function clearAllData() {
         rowCounterManual = 1;
     }
 
+    // Reset tax settings when clearing all data
+    discountPercent = 0;
+    gstPercent = 0;
+
     updateSerialNumbers();
     updateTotal();
     saveToLocalStorage();
@@ -840,7 +1020,7 @@ function downloadPDF() {
     const rateColIndex = isAreaMode ? 3 : 4;
     const areaColIndex = 2;
     const removeColIndex = isAreaMode ? 6 : 6;
-    const dragColIndex = isAreaMode ? 7 : 7; // Drag column is always the last column (index 7)
+    const dragColIndex = isAreaMode ? 7 : 7;
     
     // UI elements
     const billContainer = document.getElementById("bill-container");
@@ -850,17 +1030,23 @@ function downloadPDF() {
     const historySidebar = document.getElementById("history-sidebar");
     const historyOverlay = document.getElementById("history-overlay");
 
-    // Tables
-    const copyListArea = document.getElementById("copyListArea");
-    const copyListManual = document.getElementById("copyListManual");
+    // Tax rows that need to be shown in PDF
+    const discountRow = document.getElementById('discount-row');
+    const gstRow = document.getElementById('gst-row');
+    const grandTotalRow = document.getElementById('grand-total-row');
     
     // Store initial display states
     const initialBillDisplay = billContainer.style.display;
     const initialAreaDisplay = areaContainer.style.display;
     const initialManualDisplay = manualContainer.style.display;
     const initialToolsDisplay = tools.style.display;
-    const initialHistorySidebarDisplay = historySidebar.style.display;
-    const initialHistoryOverlayDisplay = historyOverlay.style.display;
+    const initialHistorySidebarDisplay = historySidebar ? historySidebar.style.display : 'none';
+    const initialHistoryOverlayDisplay = historyOverlay ? historyOverlay.style.display : 'none';
+    
+    // Store initial tax row display states
+    const initialDiscountDisplay = discountRow ? discountRow.style.display : 'none';
+    const initialGstDisplay = gstRow ? gstRow.style.display : 'none';
+    const initialGrandTotalDisplay = grandTotalRow ? grandTotalRow.style.display : 'none';
 
     // 1. Configure the display for PDF generation
     billContainer.style.display = "block";
@@ -870,21 +1056,27 @@ function downloadPDF() {
     if(historyOverlay) historyOverlay.style.display = "none";
     if(tools) tools.style.display = "none";
 
-    // 2. Ensure only the current mode's table is visible in the bill container
+    // 2. Ensure tax rows are visible for PDF
+    if(discountRow && discountPercent > 0) discountRow.style.display = '';
+    if(gstRow && gstPercent > 0) gstRow.style.display = '';
+    if(grandTotalRow && (discountPercent > 0 || gstPercent > 0)) grandTotalRow.style.display = '';
+
+    // 3. Ensure only the current mode's table is visible in the bill container
+    const copyListArea = document.getElementById("copyListArea");
+    const copyListManual = document.getElementById("copyListManual");
     copyListArea.style.display = isAreaMode ? "table" : "none";
     copyListManual.style.display = isAreaMode ? "none" : "table";
 
-    // 3. Hide "Remove" and "Drag" columns in the displayed bill table (copyList)
+    // 4. Hide "Remove" and "Drag" columns in the displayed bill table (copyList)
     hideTableColumn(document.getElementById(copyListId), removeColIndex, "none");
     hideTableColumn(document.getElementById(copyListId), dragColIndex, "none");
     
-    // 4. Hide Rate column if it was toggled off
+    // 5. Hide Rate column if it was toggled off
     if (rateColumnHidden) {
-        // Need to hide the rate header in the copyList
         hideTableColumn(document.getElementById(copyListId), rateColIndex, "none");
     }
 
-    // 5. Hide Area column in manual mode
+    // 6. Hide Area column in manual mode
     if (!isAreaMode) {
         hideTableColumn(copyListArea, areaColIndex, "none");
     }
@@ -909,6 +1101,11 @@ function downloadPDF() {
             if(tools) tools.style.display = initialToolsDisplay;
             if(historySidebar) historySidebar.style.display = initialHistorySidebarDisplay;
             if(historyOverlay) historyOverlay.style.display = initialHistoryOverlayDisplay;
+
+            // Restore tax row display states
+            if(discountRow) discountRow.style.display = initialDiscountDisplay;
+            if(gstRow) gstRow.style.display = initialGstDisplay;
+            if(grandTotalRow) grandTotalRow.style.display = initialGrandTotalDisplay;
 
             // Restore columns
             hideTableColumn(document.getElementById(copyListId), removeColIndex, "table-cell");
@@ -968,7 +1165,13 @@ function saveStateToHistory() {
             billNo: document.getElementById("billNo").value,
             address: document.getElementById("custAddr").value,
             date: document.getElementById("billDate").value,
-            phone: document.getElementById("custPhone").value
+            phone: document.getElementById("custPhone").value,
+            gstin: document.getElementById("custGSTIN").value
+        },
+        // Add tax settings to history state
+        taxSettings: {
+            discountPercent: discountPercent,
+            gstPercent: gstPercent
         }
     };
 
@@ -996,6 +1199,12 @@ function restoreStateFromHistory() {
 
     const state = JSON.parse(historyStack[historyIndex]);
 
+    // Restore tax settings
+    if (state.taxSettings) {
+        discountPercent = state.taxSettings.discountPercent || 0;
+        gstPercent = state.taxSettings.gstPercent || 0;
+    }
+
     // Restore common info
     document.getElementById("companyName").textContent = state.company.name;
     document.getElementById("companyAddr").textContent = state.company.address;
@@ -1005,6 +1214,7 @@ function restoreStateFromHistory() {
     document.getElementById("custAddr").value = state.customer.address;
     document.getElementById("billDate").value = state.customer.date;
     document.getElementById("custPhone").value = state.customer.phone;
+    document.getElementById("custGSTIN").value = state.customer.gstin || '';
 
     document.getElementById(createListId).querySelector('tbody').innerHTML = '';
     document.getElementById(copyListId).querySelector('tbody').innerHTML = '';
@@ -1222,6 +1432,13 @@ function loadFromHistory(item) {
     document.getElementById("custAddr").value = data.customer.address;
     document.getElementById("billDate").value = data.customer.date;
     document.getElementById("custPhone").value = data.customer.phone;
+    document.getElementById("custGSTIN").value = data.customer.gstin || '';
+
+    // Restore tax settings
+    if (data.taxSettings) {
+        discountPercent = data.taxSettings.discountPercent || 0;
+        gstPercent = data.taxSettings.gstPercent || 0;
+    }
 
     document.getElementById(createListId).querySelector('tbody').innerHTML = '';
     document.getElementById(copyListId).querySelector('tbody').innerHTML = '';
